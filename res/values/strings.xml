@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, KUWifiHelperActivity!</string>
+    <string name="app_name">KUWifiHelper</string>
+    <string name="welcome">Welcome to the KUWifiHelper! To begin, enter your LDAP credentials. These will be stored securely on your phone and will not be communicated to 3rd parties.</string>
+    <string name="username_string">Kettering LDAP Username</string>
+    <string name="password">Password</string>
+    <string name="save">save</string>
+
+</resources>
