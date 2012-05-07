@@ -80,6 +80,12 @@ public class KUWifiHelperActivity extends Activity {
 				
 			}
 		});
+        try {
+			fis.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 	static String[] getCredentials(FileInputStream fis) {

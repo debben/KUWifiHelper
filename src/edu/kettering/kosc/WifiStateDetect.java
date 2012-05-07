@@ -1,6 +1,7 @@
 package edu.kettering.kosc;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ public class WifiStateDetect extends BroadcastReceiver {
 	            WifiManager manager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
 	            String networkName = manager.getConnectionInfo().getSSID();
 	            if(networkName.equals("KUSTUDENT")){
-	            	doKUStudentConnection();
+	            	doKUStudentConnection(context);
 	            }
 	            else if(networkName.equals("KUW")){
 	            	doKUWConnection(context);
@@ -52,7 +53,50 @@ public class WifiStateDetect extends BroadcastReceiver {
 		
 		
 	}
+	private void doKUStudentConnection(Context c) {
+		//first, let's put up a toast message for the user:
+		Context context = c;
+		CharSequence text = "Attempting to send user credentials on the wifi network";
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(c, "attempting login on KUSTUDENT", Toast.LENGTH_LONG);
+		toast.show();				
+		
+		
+	    HttpClient httpclient = new DefaultHttpClient();
+	    HttpPost httppost = new HttpPost("https://wireless.kettering.edu/login.html");
+
+	    try {
+	    	FileInputStream fis = new FileInputStream(KUWifiHelperActivity.FILENAME);
+	    	String[] credentials = KUWifiHelperActivity.getCredentials(fis);
+	        // Add your data
+	        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	        nameValuePairs.add(new BasicNameValuePair("buttonClicked", "0"));
+	        nameValuePairs.add(new BasicNameValuePair("err_flag", "0"));
+	        nameValuePairs.add(new BasicNameValuePair("err_msg", ""));
+	        nameValuePairs.add(new BasicNameValuePair("info_flag", "0"));
+	        nameValuePairs.add(new BasicNameValuePair("info_msg", "0"));
+	        nameValuePairs.add(new BasicNameValuePair("redirect_url", ""));
+	        nameValuePairs.add(new BasicNameValuePair("username", credentials[0]));
+	        nameValuePairs.add(new BasicNameValuePair("password", credentials[1]));
+	        
+	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));	        
+
+	        // Execute HTTP Post Request
+	        HttpResponse response = httpclient.execute(httppost);
+	        fis.close();
+	    } catch (ClientProtocolException e) {
+	        // TODO Auto-generated catch block
+	    	Log.i(TAG, "Got client protocol exception for KUW: " + e.getMessage());
+	    } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	    	Log.i(TAG, "Got client protocol exception for KUW: " + e.getMessage());
+	    }
+
+		
+	}
 	private void doKUWConnection(Context c) {
+		// TODO Auto-generated method stub
 		//first, let's put up a toast message for the user:
 		Context context = c;
 		CharSequence text = "Attempting to send user credentials on the wifi network";
@@ -83,21 +127,19 @@ public class WifiStateDetect extends BroadcastReceiver {
 	        nameValuePairs.add(new BasicNameValuePair("username", credentials[0]));
 	        nameValuePairs.add(new BasicNameValuePair("password", credentials[1]));
 	        
-	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));	        
 
 	        // Execute HTTP Post Request
 	        HttpResponse response = httpclient.execute(httppost);
 	        
+	        fis.close();
 	    } catch (ClientProtocolException e) {
 	        // TODO Auto-generated catch block
+	    	Log.i(TAG, "Got client protocol exception for KUW: " + e.getMessage());
 	    } catch (IOException e) {
 	        // TODO Auto-generated catch block
+	    	Log.i(TAG, "Got client protocol exception for KUW: " + e.getMessage());
 	    }
-		
-	}
-	private void doKUStudentConnection() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
